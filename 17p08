@@ -1,0 +1,21 @@
+// Range Filter
+if (dist_raw >= _DIST_MIN && dist_raw <= _DIST_MAX)
+{
+  // Turn on LED
+  digitalWrite(PIN_LED, HIGH);
+
+  // EMA Filter
+  dist_ema = EMA_ALPHA * dist_raw + (1 - EMA_ALPHA) * dist_ema;
+
+  // Servo control without using map()
+  duty = int((dist_ema - _DIST_MIN) / (_DIST_MAX - _DIST_MIN) * (_DUTY_MAX - _DUTY_MIN)) + _DUTY_MIN;
+  myservo.writeMicroseconds(duty);
+
+  // Update dist_prev for EMA Filter
+  dist_prev = dist_ema;
+}
+else
+{
+  // Turn off LED if not in the range
+  digitalWrite(PIN_LED, LOW);
+}
